@@ -1,0 +1,4 @@
+dbdata/*
+!dbdata/.gitkeep
+pma/sessions/*
+!pma/sessions/.gitkeep

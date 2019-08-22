@@ -1,0 +1,70 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: unless-stopped
+    volumes:
+      - './dbdata:/var/lib/mysql'
+    ports:
+      - 3307:3306
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - app-network
+
+  wordpress:
+    image: wordpress:5.1.1-fpm-alpine
+    container_name: wordpress
+    restart: unless-stopped
+    volumes:
+      - '/Users/casey/Desktop/projects/wp-5/www/adaptable:/var/www/adaptable'
+    networks:
+      - app-network
+
+  nginx:
+    image: 'nginx'
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      - db
+      - wordpress
+      - phpmyadmin
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes: 
+      - '/Users/casey/Desktop/projects/certs:/var/certs:ro'
+      - '/Users/casey/Desktop/projects/nginx/conf.d:/etc/nginx/conf.d'
+      - '/Users/casey/Desktop/projects/nginx/shared:/etc/nginx/shared'
+      - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
+    networks:
+        - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+      - PMA_VERBOSE=db
+      - PMA_ABSOLUTE_URI=https://phpmyadmin.local
+    links:
+      - db
+    volumes:
+      - './pma/sessions:/sessions'
+      - './pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php'
+    ports:
+      - 8080:8080
+    networks:
+        - app-network
+
+networks:
+  app-network:
+    driver: bridge  
