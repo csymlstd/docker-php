@@ -1,4 +1,5 @@
-dbdata/*
-!dbdata/.gitkeep
+db/data/*
 pma/sessions/*
-!pma/sessions/.gitkeep
+portainer/data/*
+www/*
+logs/apache/*
