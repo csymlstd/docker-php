@@ -17,8 +17,9 @@ All Apache site configs can be found in the `apache/sites` folder.
 Update your host files for each virtual host added; Below are for the management tools.
 
 ```
-127.0.0.1       portainer.local
-127.0.0.1       phpmyadmin.local
+127.0.0.1       portainer.local # manage docker
+127.0.0.1       phpmyadmin.local # manage db
+127.0.0.1       static.local # access to www
 ```
 
 ## Database
