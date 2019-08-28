@@ -32,7 +32,7 @@ services:
       - './php/php.ini:/usr/local/etc/php/php.ini'
       - './php/www.conf:/usr/local/etc/php-fpm.d/www.conf'
       - ~/.drush/:/root/.drush/
-      - '../wp-5/www:/var/www'
+      - './www:/var/www'
     working_dir: /var/www
     networks:
       - app-network
@@ -49,7 +49,7 @@ services:
       - './apache/httpd.conf:/usr/local/apache2/conf/httpd.conf'
       - './apache/sites:/usr/local/apache2/sites-enabled'
       - './logs/apache:/logs'
-      - '../wp-5/www:/var/www'
+      - './www:/var/www'
     networks:
         - app-network
 
@@ -67,8 +67,7 @@ services:
     volumes: 
       - './certs:/var/certs:ro'
       - './nginx:/etc/nginx/conf.d'
-      - './shared:/etc/nginx/shared'
-      - '../wp-5/www:/var/www'
+      - './www:/var/www'
     networks:
         - app-network
 
