@@ -9,7 +9,7 @@ services:
       - ./portainer/data:/data
     networks:
       - app-network
-      
+
   db:
     image: mysql:5.7
     container_name: db
@@ -29,10 +29,10 @@ services:
     build: ./build/php
     image: php:7-fpm
     volumes:
-      - './php.ini:/usr/local/etc/php/php.ini'
+      - './php/php.ini:/usr/local/etc/php/php.ini'
       - './php/www.conf:/usr/local/etc/php-fpm.d/www.conf'
-      - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
       - ~/.drush/:/root/.drush/
+      - '../wp-5/www:/var/www'
     working_dir: /var/www
     networks:
       - app-network
@@ -46,27 +46,12 @@ services:
     ports:
       - 8081:80
     volumes:
-      - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
-      - './httpd.conf:/usr/local/apache2/conf/httpd.conf'
-      - './apache:/usr/local/apache2/sites-enabled'
+      - './apache/httpd.conf:/usr/local/apache2/conf/httpd.conf'
+      - './apache/sites:/usr/local/apache2/sites-enabled'
       - './logs/apache:/logs'
+      - '../wp-5/www:/var/www'
     networks:
         - app-network
-
-  # drupal:
-  #   image: php:7.2-apache
-  #   build: ./build/php
-  #   container_name: apache
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8081:80
-  #   volumes:
-  #     - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
-  #     # - './httpd.conf:/etc/apache2/apache2.conf'
-  #     - './apache:/etc/apache2/sites-enabled'
-  #     - './logs/apache:/logs'
-  #   networks:
-  #       - app-network
 
   nginx:
     image: 'nginx'
@@ -80,10 +65,10 @@ services:
       - "80:80"
       - "443:443"
     volumes: 
-      - '/Users/casey/Desktop/projects/certs:/var/certs:ro'
-      - '/Users/casey/Desktop/projects/nginx/nginx:/etc/nginx/conf.d'
-      - '/Users/casey/Desktop/projects/nginx/shared:/etc/nginx/shared'
-      - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
+      - './certs:/var/certs:ro'
+      - './nginx:/etc/nginx/conf.d'
+      - './shared:/etc/nginx/shared'
+      - '../wp-5/www:/var/www'
     networks:
         - app-network
 
@@ -103,7 +88,7 @@ services:
     links:
       - db
     volumes:
-      - './php.ini:/usr/local/etc/php/php.ini'
+      - './php/php.ini:/usr/local/etc/php/php.ini'
       - './pma/sessions:/sessions'
       - './pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php'
       - './db/data:/db'
@@ -111,29 +96,6 @@ services:
       - 8080:8080
     networks:
         - app-network
-
-
-  # drush:
-  #   image: drush/drush:9
-  #   container_name: drush
-  #   depends_on:
-  #     - nginx
-  #   volumes:
-  #     - './php.ini:/usr/local/etc/php/php.ini'
-  #     - './php/www.conf:/usr/local/etc/php-fpm.d/www.conf'
-  #     - '/Users/casey/Desktop/projects/wp-5/www:/var/www'
-  #   links:
-  #     - db
-  #     - nginx
-  #     - apache
-  #   extra_hosts:
-  #     - "portal.local:127.0.0.1"
-  #   entrypoint:
-  #     - drush
-  #     - "--root=/var/www/galdermacapcom-master-fea73447b5bf46105300481c49aa5d0e59e378cc/docroot"
-  #     - "--uri=http://portal.local"
-  #   networks:
-  #       - app-network
 
 networks:
   app-network:
