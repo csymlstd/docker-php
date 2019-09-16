@@ -18,7 +18,10 @@ RUN set -eux; \
 		libpng-dev \
 		libpq-dev \
 		libzip-dev \
+		libmagickwand-dev \
+		ghostscript \
 	; \
+	# pecl install imagick; \
 	\
 	docker-php-ext-configure gd \
 		--with-freetype-dir=/usr \
@@ -35,6 +38,10 @@ RUN set -eux; \
 		zip \
 	; \
 	\
+	docker-php-ext-enable \
+		imagick \
+	; \
+	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
@@ -47,6 +54,10 @@ RUN set -eux; \
 		| xargs -rt apt-mark manual; \
 	\
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/* \
+	rm -f /usr/local/etc/php/conf.d/opcache-recommended.ini
 
+# opcache recommended removed to apply dev settings from php.ini
+
+# Optionally Install Drush
 RUN php -r "readfile('http://files.drush.org/drush.phar');" > drush && chmod +x drush && mv drush /usr/bin/
