@@ -63,6 +63,7 @@ services:
       - php
       - apache
       - phpmyadmin
+
     ports:
       - "80:80"
       - "443:443"
@@ -71,17 +72,6 @@ services:
       - './nginx/conf.d:/etc/nginx/conf.d'
       - './nginx/nginx.conf:/etc/nginx/nginx.conf'
       - './www:/var/www'
-    networks:
-        - app-network
-
-  nginx2:
-    build: './build/nginx'
-    container_name: nginx2
-    depends_on:
-      - db
-      - php
-      - apache
-      - phpmyadmin
     networks:
         - app-network
 
@@ -109,10 +99,6 @@ services:
       - 8080:8080
     networks:
         - app-network
-
-# volumes:
-#   www-sync:
-#     external: true
 
 networks:
   app-network:
